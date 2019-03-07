@@ -2,15 +2,6 @@
 
 ===============================================================================
 
-     Pentru realizarea temei am pornit de la scheletul de cod pus la dispozitie,
-impreuna cu scheletul si solutia laboratorului 6, in special exercitiul prot.c. 
-Am adus modificari si am adaugat noi functionalitati scheletului in cadrul fisierului
-loader.c, restul fisierelor ramanand asa cum au fost preluate de pe github.
-
-     La functia so_execute am adaugat, fata de ceea ce cuprindea initial,
-descriptorul de fisier rezultat in urma deschiderii fisierului aflat la adresa 
-path, descriptor ce va fi pasat functiei mmap.
-
      Functia so_init_loader contine declararea / inregistrarea handler-ului ce
 va trata semnalul de tip SIGSEGV. In mare parte, aceasta este preluata din laboratorul
 6. Tot in cadrul acestei functii aflu dimensiunea unei pagini din memorie, 
