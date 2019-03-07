@@ -1,0 +1,50 @@
+===============================================================================
+
+===============================================================================
+
+     Pentru realizarea temei am pornit de la scheletul de cod pus la dispozitie,
+impreuna cu scheletul si solutia laboratorului 6, in special exercitiul prot.c. 
+Am adus modificari si am adaugat noi functionalitati scheletului in cadrul fisierului
+loader.c, restul fisierelor ramanand asa cum au fost preluate de pe github.
+
+     La functia so_execute am adaugat, fata de ceea ce cuprindea initial,
+descriptorul de fisier rezultat in urma deschiderii fisierului aflat la adresa 
+path, descriptor ce va fi pasat functiei mmap.
+
+     Functia so_init_loader contine declararea / inregistrarea handler-ului ce
+va trata semnalul de tip SIGSEGV. In mare parte, aceasta este preluata din laboratorul
+6. Tot in cadrul acestei functii aflu dimensiunea unei pagini din memorie, 
+informatie ce imi va fi utila mai tarziu.
+
+     Functia segv_handler realizeaza, asa cum am precizat, tratarea unui eveniment
+de tip page-faul. In prima faza verific daca semnalul care a generat apelarea 
+handler-ului este de tip SIGSEGV, in caz contrar apelez handler-ul default.
+Mai departe voi realiza urmatorii pasi:
+
+       - aflu adresa din memorie la care a fost generat semnalul SIGSEGV
+
+       - daca adresa accesata este deja mapata inseamna ca se realizeaza un 
+acces nepermis la memorie (un adevarat seg fault), lucru indicat de flag-ul
+SEGV_ACCER al structurii siginfo_t. In acest caz se va apela handler-ul default.
+
+       - daca adresa accesata nu se afla intr-unul din segmentele executabilului 
+voi apela din nou handler-ul default, deoarece zona de memorie accesata nu 
+apartine programului pe care vreau sa il lansez in executie. Verificarea 
+acestei proprietati este realizata de functia address_in_segments(char *addr).
+
+       - daca adresa accesata nu este mapata in memorie si se afla in interiorul
+segmentelor executabilului voi proceda astfel:
+
+              - in cazul in care intreaga pagina este continuta in fisier, o voi
+mapa in memorie si voi copia in fisier pageSize octeti.
+
+              - in cazul in care pagina are doar o parte din date in fisier, iar
+cealalta parte in bss, voi zeroiza zona din afara fisierului si voi copia datele
+din acesta.
+
+              - in cazul in care intreaga pagina se afla in afara fisierului, o
+voi mapa in memorie, voi zeroiza zona respectiva. De aceasta data nu mai este 
+nevoie sa folosesc functia memset pentru zeroizare, flag-ul MAP_ANONYMOUS facand 
+acest lucru in mod implicit.
+
+===============================================================================
